@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#d71f32">
+    <title>Kebab Roulette</title>
+    <link rel="manifest" href="manifest.webmanifest?v=19">
+    <link rel="stylesheet" href="styles.css?v=19">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="top-bar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span>0</span>
+          </div>
+          <div class="brand-copy">
+            <h1 id="gameTitle">Kebab Roulette</h1>
+            <p id="sceneCaption" hidden></p>
+          </div>
+        </div>
+        <button class="utility-button settings-open-button" id="settingsButton" type="button">Settings</button>
+      </header>
+
+      <section class="scene betting-scene is-active" id="bettingScene" aria-labelledby="tableTitle">
+        <div class="play-panel">
+          <div class="status-grid">
+            <div>
+              <span>Remaining Chips</span>
+              <strong id="chipCount">5</strong>
+            </div>
+          </div>
+
+          <div class="chip-rack" id="chipRack" aria-label="Chip rack"></div>
+
+          <div class="action-row">
+            <button class="primary-action" id="spinButton" type="button">Spin the Wheel</button>
+            <button class="secondary-action" id="clearButton" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="table-section">
+          <div class="section-bar">
+            <h2 id="tableTitle">Roulette Table</h2>
+            <div class="history-strip" id="historyStrip" aria-label="Recent results"></div>
+          </div>
+          <div class="table-wrap">
+            <div class="roulette-table" id="rouletteTable" aria-label="Roulette betting table"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene wheel-scene" id="wheelScene" aria-label="Roulette wheel" hidden>
+        <div class="wheel-panel">
+          <canvas id="wheelCanvas" width="900" height="900" aria-label="Roulette wheel"></canvas>
+          <div class="wheel-pointer" aria-hidden="true"></div>
+          <div class="result-dial" id="resultDial" aria-live="polite">
+            <span class="result-kicker" id="resultKicker">Ready</span>
+            <strong class="result-number" id="resultNumber">--</strong>
+            <span class="result-copy" id="resultCopy">Good luck</span>
+          </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen" hidden>
+          <div class="landing-number" id="landingNumber">--</div>
+          <img class="outcome-art" id="outcomeImage" alt="">
+          <h2 id="outcomeTitle">Dubber</h2>
+        </div>
+
+        <div class="wheel-actions">
+          <button class="secondary-action" id="newRoundButton" type="button" hidden>Next Round</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+      <form id="settingsForm" method="dialog">
+        <header class="dialog-header">
+          <h2 id="settingsTitle">Settings</h2>
+          <button class="utility-button compact" id="closeSettingsButton" type="button" aria-label="Close settings" title="Close">
+            Close
+          </button>
+        </header>
+
+        <div class="settings-grid">
+          <label class="field">
+            <span>Groom</span>
+            <input id="groomNameInput" name="groomName" type="text" maxlength="32" autocomplete="off">
+          </label>
+        </div>
+
+        <label class="field power-list-field">
+          <span>Power numbers</span>
+          <textarea id="powerNumbersInput" name="powerNumbers" rows="3" inputmode="numeric" placeholder="7, 14, 23, 29, 32, 36"></textarea>
+        </label>
+
+        <label class="field range-field">
+          <span>Hit chance</span>
+          <input id="powerChanceInput" name="powerChance" type="range" min="0" max="95" step="1">
+          <output id="powerChanceOutput">37%</output>
+        </label>
+
+        <div class="settings-meter" aria-live="polite">
+          <span>Effective boost</span>
+          <strong id="powerBoostPreview">x3</strong>
+        </div>
+
+        <menu class="dialog-actions">
+          <button class="secondary-action" id="resetSettingsButton" type="button">Reset</button>
+          <button class="primary-action" type="submit">Done</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script src="app.js?v=19"></script>
+  </body>
+</html>
