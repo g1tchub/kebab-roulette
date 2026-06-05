@@ -1,4 +1,4 @@
-const CACHE_NAME = "kebab-roulette-v23";
+const CACHE_NAME = "kebab-roulette-v24";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,6 +7,9 @@ const ASSETS = [
   "./manifest.webmanifest",
   "./assets/chip.png",
   "./assets/winner.png",
+  "./assets/winner-icon-180.png",
+  "./assets/winner-icon-192.png",
+  "./assets/winner-icon-512.png",
   "./assets/loser.png"
 ];
 
