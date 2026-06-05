@@ -1,11 +1,10 @@
-const CACHE_NAME = "kebab-roulette-v21";
+const CACHE_NAME = "kebab-roulette-v22";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.webmanifest",
-  "./icon.svg",
   "./assets/chip.png",
   "./assets/winner.png",
   "./assets/loser.png"

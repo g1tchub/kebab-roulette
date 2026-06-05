@@ -105,35 +105,30 @@ button {
 }
 
 .brand-mark {
+  position: relative;
   display: grid;
   width: 58px;
   height: 58px;
   flex: 0 0 auto;
   place-items: center;
-  border: 3px solid var(--neon-cyan);
-  border-radius: 50%;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 8px;
   padding: 0;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255, 244, 199, 0.95) 0 29%, transparent 30%),
-    conic-gradient(from -6deg, var(--red) 0 10deg, var(--black) 10deg 20deg, var(--brass) 20deg 30deg, var(--black) 30deg 40deg, var(--felt) 40deg 50deg, var(--black) 50deg 60deg, var(--red) 60deg 70deg, var(--black) 70deg 80deg, var(--brass) 80deg 90deg, var(--black) 90deg 100deg, var(--red) 100deg 110deg, var(--black) 110deg 120deg, var(--brass) 120deg 130deg, var(--black) 130deg 140deg, var(--red) 140deg 150deg, var(--black) 150deg 160deg, var(--brass) 160deg 170deg, var(--black) 170deg 180deg, var(--red) 180deg 190deg, var(--black) 190deg 200deg, var(--brass) 200deg 210deg, var(--black) 210deg 220deg, var(--red) 220deg 230deg, var(--black) 230deg 240deg, var(--brass) 240deg 250deg, var(--black) 250deg 260deg, var(--red) 260deg 270deg, var(--black) 270deg 280deg, var(--brass) 280deg 290deg, var(--black) 290deg 300deg, var(--red) 300deg 310deg, var(--black) 310deg 320deg, var(--brass) 320deg 330deg, var(--black) 330deg 340deg, var(--red) 340deg 350deg, var(--black) 350deg 360deg);
+  background: rgba(255, 244, 199, 0.12);
   box-shadow:
     0 0 16px rgba(53, 242, 255, 0.72),
     0 10px 18px rgba(0, 0, 0, 0.36);
-  color: var(--ink);
-  font-weight: 950;
   min-height: 0;
+  overflow: hidden;
 }
 
-.brand-mark span {
-  display: grid;
-  width: 27px;
-  height: 27px;
-  place-items: center;
-  border: 2px solid var(--cream);
-  border-radius: 50%;
-  background: var(--shop-red);
-  color: var(--cream);
-  text-shadow: 0 0 8px rgba(255, 244, 199, 0.8);
+.brand-mark img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .brand-copy {
@@ -1108,12 +1103,6 @@ fieldset legend {
   .brand-mark {
     width: 44px;
     height: 44px;
-  }
-
-  .brand-mark span {
-    width: 23px;
-    height: 23px;
-    font-size: 0.82rem;
   }
 
   .brand-copy::before {

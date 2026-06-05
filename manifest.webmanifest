@@ -9,10 +9,10 @@
   "theme_color": "#d71f32",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "assets/winner.png",
+      "sizes": "77x96",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
