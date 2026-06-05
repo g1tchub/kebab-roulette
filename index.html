@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#d71f32">
     <title>Kebab Roulette</title>
-    <link rel="manifest" href="manifest.webmanifest?v=19">
-    <link rel="stylesheet" href="styles.css?v=19">
+    <link rel="manifest" href="manifest.webmanifest?v=21">
+    <link rel="stylesheet" href="styles.css?v=21">
   </head>
   <body>
     <main class="app-shell">
@@ -66,6 +66,13 @@
           <div class="landing-number" id="landingNumber">--</div>
           <img class="outcome-art" id="outcomeImage" alt="">
           <h2 id="outcomeTitle">Dubber</h2>
+          <button class="primary-action outcome-reveal-button" id="showRewardButton" type="button">Show Prize</button>
+        </div>
+
+        <div class="reward-screen" id="rewardScreen" hidden aria-live="polite">
+          <span class="reward-kicker" id="rewardKicker">Prize</span>
+          <h2 id="rewardTitle">Prize</h2>
+          <p class="reward-copy" id="rewardText"></p>
         </div>
 
         <div class="wheel-actions">
@@ -106,6 +113,22 @@
           <strong id="powerBoostPreview">x3</strong>
         </div>
 
+        <fieldset class="queue-settings">
+          <legend>Prizes</legend>
+          <label class="field">
+            <span>Prize list</span>
+            <textarea id="prizeListInput" name="prizes" rows="5" placeholder="Free drink token"></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset class="queue-settings">
+          <legend>Forfeits</legend>
+          <label class="field">
+            <span>Forfeit list</span>
+            <textarea id="forfeitListInput" name="forfeits" rows="5" placeholder="Buy the next round"></textarea>
+          </label>
+        </fieldset>
+
         <menu class="dialog-actions">
           <button class="secondary-action" id="resetSettingsButton" type="button">Reset</button>
           <button class="primary-action" type="submit">Done</button>
@@ -113,6 +136,6 @@
       </form>
     </dialog>
 
-    <script src="app.js?v=19"></script>
+    <script src="app.js?v=21"></script>
   </body>
 </html>

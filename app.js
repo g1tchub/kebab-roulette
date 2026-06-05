@@ -10,7 +10,26 @@
   const DEFAULT_CONFIG = {
     groomName: "Conor",
     powerNumbers: [11, 2, 27, 30, 5, 36],
-    powerChance: 37
+    powerChance: 37,
+    prizes: [
+      "A wonderful suit",
+      "A pack of cigarettes",
+      "The Witnesssss",
+      "Group hug",
+      "A call with Jabiz",
+      "A bag of MDMA pills"
+    ],
+    forfeits: [
+      "Lose phone for 20 mins.",
+      "Hold hands with a stranger.",
+      "If we're moving pubs, shirt +/ pants on backwards for the wall",
+      "Play a game of bogies with one person of your choice",
+      "Call with Jabiz",
+      "Play Neil or No Neil",
+      "Ask the pub to paly counterstrike main menu music",
+      "Perform The Black Parade with a stranger",
+      "Eco round"
+    ]
   };
   const DEFAULT_LEGACY_BOOST = 3;
   const OLD_DEFAULT_POWER_NUMBERS = [7, 14, 23, 29, 32];
@@ -41,6 +60,11 @@
     landingNumber: document.getElementById("landingNumber"),
     outcomeTitle: document.getElementById("outcomeTitle"),
     outcomeImage: document.getElementById("outcomeImage"),
+    showRewardButton: document.getElementById("showRewardButton"),
+    rewardScreen: document.getElementById("rewardScreen"),
+    rewardKicker: document.getElementById("rewardKicker"),
+    rewardTitle: document.getElementById("rewardTitle"),
+    rewardText: document.getElementById("rewardText"),
     chipCount: document.getElementById("chipCount"),
     chipRack: document.getElementById("chipRack"),
     spinButton: document.getElementById("spinButton"),
@@ -57,6 +81,8 @@
     powerChanceInput: document.getElementById("powerChanceInput"),
     powerChanceOutput: document.getElementById("powerChanceOutput"),
     powerBoostPreview: document.getElementById("powerBoostPreview"),
+    prizeListInput: document.getElementById("prizeListInput"),
+    forfeitListInput: document.getElementById("forfeitListInput"),
     resetSettingsButton: document.getElementById("resetSettingsButton")
   };
 
@@ -81,6 +107,8 @@
     revealingOutcome: false,
     spun: false,
     lastResult: null,
+    lastOutcomeWon: null,
+    rewardShown: false,
     history: []
   };
 
@@ -106,6 +134,7 @@
     elements.spinButton.addEventListener("click", spin);
     elements.clearButton.addEventListener("click", clearBets);
     elements.newRoundButton.addEventListener("click", clearBets);
+    elements.showRewardButton.addEventListener("click", showNextReward);
     elements.settingsButton.addEventListener("click", () => {
       if (!state.spinning) {
         openSettings();
@@ -117,6 +146,8 @@
     elements.groomNameInput.addEventListener("input", applySettingsFromForm);
     elements.powerNumbersInput.addEventListener("input", applySettingsFromForm);
     elements.powerChanceInput.addEventListener("input", applySettingsFromForm);
+    elements.prizeListInput.addEventListener("input", applySettingsFromForm);
+    elements.forfeitListInput.addEventListener("input", applySettingsFromForm);
   }
 
   function loadConfig() {
@@ -140,7 +171,18 @@
       : legacyBoostToChance(powerNumbers.length, source.boost);
     const powerChance = sanitizePowerChance(rawPowerChance);
     const groomName = String(merged.groomName || DEFAULT_CONFIG.groomName).trim().slice(0, 32) || DEFAULT_CONFIG.groomName;
-    return { groomName, powerNumbers, powerChance };
+    const prizes = sanitizeQueue(merged.prizes);
+    const forfeits = sanitizeQueue(merged.forfeits);
+    return { groomName, powerNumbers, powerChance, prizes, forfeits };
+  }
+
+  function sanitizeQueue(values) {
+    if (values === undefined || values === null) {
+      return [];
+    }
+
+    const lines = Array.isArray(values) ? values : String(values).split(/\r?\n/);
+    return lines.map((value) => String(value).trim()).filter(Boolean);
   }
 
   function sanitizePowerNumbers(values) {
@@ -325,11 +367,14 @@
     state.revealingOutcome = false;
     state.spun = false;
     state.lastResult = null;
+    state.lastOutcomeWon = null;
+    state.rewardShown = false;
     ballAngle = BALL_LANDING_ANGLE;
     ballWobble = 0;
     selectedChip = 0;
     showScene("betting");
     hideOutcome();
+    hideReward();
     elements.resultKicker.textContent = "Open";
     elements.resultNumber.textContent = "--";
     elements.resultCopy.textContent = "Order up";
@@ -414,7 +459,10 @@
     state.spinning = true;
     state.revealingOutcome = false;
     state.spun = false;
+    state.lastOutcomeWon = null;
+    state.rewardShown = false;
     hideOutcome();
+    hideReward();
     elements.newRoundButton.hidden = true;
     elements.resultKicker.textContent = "";
     elements.resultNumber.textContent = "";
@@ -490,6 +538,8 @@
     state.revealingOutcome = true;
     state.spun = true;
     state.lastResult = winner;
+    state.lastOutcomeWon = won;
+    state.rewardShown = false;
     state.history = [won ? "Dubber" : "Loser", ...state.history].slice(0, 8);
     elements.resultKicker.textContent = "Landed";
     elements.resultNumber.textContent = String(winner);
@@ -553,7 +603,7 @@
     const controlsLocked = state.spinning || state.revealingOutcome;
     elements.spinButton.disabled = controlsLocked || placedCount === 0 || state.spun;
     elements.clearButton.disabled = controlsLocked || placedCount === 0;
-    elements.newRoundButton.hidden = !state.spun || state.revealingOutcome;
+    elements.newRoundButton.hidden = !state.rewardShown || state.revealingOutcome;
     elements.settingsButton.disabled = controlsLocked;
 
     document.querySelectorAll(".chip").forEach((chip) => {
@@ -657,6 +707,7 @@
   function showOutcome(won, winner) {
     const outcome = won ? "Dubber" : "Loser";
     const image = won ? ASSETS.winner : ASSETS.loser;
+    hideReward();
     elements.resultKicker.textContent = outcome;
     elements.resultNumber.textContent = "";
     elements.resultCopy.textContent = "";
@@ -686,9 +737,43 @@
     };
     elements.outcomeImage.src = image;
     elements.outcomeImage.alt = outcome;
+    elements.showRewardButton.hidden = false;
+    elements.showRewardButton.textContent = won ? "Show Prize" : "Show Forfeit To Regain Tokens";
     if (elements.outcomeImage.complete && elements.outcomeImage.naturalWidth > 0) {
       elements.outcomeImage.classList.add("is-visible");
     }
+  }
+
+  function showNextReward() {
+    if (!state.spun || state.revealingOutcome || state.rewardShown || state.lastOutcomeWon === null) {
+      return;
+    }
+
+    const isPrize = state.lastOutcomeWon;
+    const queueName = isPrize ? "prizes" : "forfeits";
+    const rewardText = takeNextQueueItem(queueName);
+    showReward(isPrize, rewardText);
+    render();
+  }
+
+  function takeNextQueueItem(queueName) {
+    const queue = sanitizeQueue(config[queueName]);
+    const nextItem = queue.shift() || "";
+    config = sanitizeConfig({ ...config, [queueName]: queue });
+    saveConfig();
+    syncOpenSettingsForm();
+    return nextItem;
+  }
+
+  function showReward(isPrize, rewardText) {
+    state.rewardShown = true;
+    hideOutcome();
+    elements.wheelScene.classList.add("has-result", "has-reward");
+    elements.rewardScreen.hidden = false;
+    elements.rewardKicker.textContent = isPrize ? "Prize" : "Forfeit";
+    elements.rewardTitle.textContent = isPrize ? "Prize" : "Regain Tokens";
+    elements.rewardText.textContent = rewardText || (isPrize ? "No prizes left." : "No forfeits left.");
+    window.scrollTo(0, 0);
   }
 
   function hideOutcome() {
@@ -697,12 +782,21 @@
     elements.resultScreen.hidden = true;
     elements.resultScreen.classList.remove("no-image");
     elements.landingNumber.classList.remove("is-zooming");
+    elements.showRewardButton.hidden = true;
     elements.outcomeImage.hidden = true;
     elements.outcomeImage.onload = null;
     elements.outcomeImage.onerror = null;
     elements.outcomeImage.classList.remove("is-visible");
     elements.outcomeImage.removeAttribute("src");
     elements.outcomeImage.alt = "";
+  }
+
+  function hideReward() {
+    elements.wheelScene.classList.remove("has-reward");
+    elements.rewardScreen.hidden = true;
+    elements.rewardKicker.textContent = "";
+    elements.rewardTitle.textContent = "";
+    elements.rewardText.textContent = "";
   }
 
   function drawWheel() {
@@ -813,7 +907,9 @@
     config = sanitizeConfig({
       groomName: elements.groomNameInput.value,
       powerNumbers: elements.powerNumbersInput.value,
-      powerChance: elements.powerChanceInput.value
+      powerChance: elements.powerChanceInput.value,
+      prizes: elements.prizeListInput.value,
+      forfeits: elements.forfeitListInput.value
     });
     saveConfig();
     applyConfig();
@@ -832,7 +928,15 @@
     elements.groomNameInput.value = config.groomName;
     elements.powerNumbersInput.value = config.powerNumbers.join(", ");
     elements.powerChanceInput.value = String(config.powerChance);
+    elements.prizeListInput.value = config.prizes.join("\n");
+    elements.forfeitListInput.value = config.forfeits.join("\n");
     updatePowerReadouts();
+  }
+
+  function syncOpenSettingsForm() {
+    if (elements.settingsDialog.open) {
+      syncSettingsForm();
+    }
   }
 
   function updatePowerReadouts() {

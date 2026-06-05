@@ -1,6 +1,6 @@
 # Kebab Roulette
 
-A phone-friendly kebab-shop themed roulette PWA for a stag day. It has five chips, local PNG chip art, configurable power-number lists, adjustable hit chance, weighted spins, and winner/loser result screens.
+A phone-friendly kebab-shop themed roulette PWA for a stag day. It has five chips, local PNG chip art, configurable power-number lists, adjustable hit chance, weighted spins, winner/loser result screens, and ordered prize/forfeit queues.
 
 ## Run Locally
 
@@ -14,7 +14,7 @@ Open `http://localhost:4173`.
 
 Host the folder on any static host such as GitHub Pages or Netlify. Open the hosted URL on Android Chrome, then use **Add to Home screen**.
 
-The app stores the groom name, power numbers, and target hit chance locally on the phone. Add local PNG art at `assets/chip.png`, `assets/winner.png`, and `assets/loser.png`.
+The app stores the groom name, power numbers, target hit chance, remaining prizes, and remaining forfeits locally on the phone. Prize and forfeit lists are edited in settings, one item per line. When an item is shown, it is removed from that list so closing and reopening the app continues with the next line. Add local PNG art at `assets/chip.png`, `assets/winner.png`, and `assets/loser.png`.
 
 ## Host On GitHub Pages
 
